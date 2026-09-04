@@ -32,7 +32,6 @@ def get_content(
 
         if filename == "/stop":
             c_lock.acquire()
-            print("Encerrando conexão")
             c_lock.stop()
             c_lock.release()
         else:
@@ -66,8 +65,10 @@ def server_running(c_lock:ConnectionLock):
 def main():
     c_lock = ConnectionLock()
 
-    hostname = gethostname()
-    ip = gethostbyname(hostname)
+    #hostname = gethostname()
+    #ip = gethostbyname(hostname)
+    hostname = "Custom"
+    ip = "192.168.0.6"
     SERVER_PORT = 8000
     curr_dir = os.getcwd()
 
@@ -87,6 +88,8 @@ def main():
         )
         connection_th.start()
 
+
+    print("Encerrando conexão")
     for s in th.enumerate():
         if s.is_alive() and not s.daemon and s is not th.main_thread():
             s.join()
