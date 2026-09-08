@@ -1,6 +1,7 @@
 from typing import Tuple
 from math import ceil
 import threading as th
+import subprocess as subp
 import socket
 import sys
 import os
@@ -45,6 +46,17 @@ class ConnectionLock():
         Libera o acesso ao Lock
         """
         self._lock.release()
+
+def get_ip_addr():
+    """
+    Obtém o endereço IP do servidor de forma automática, executando o comando 'hostname -I' e capturando
+    a sua saída, utilizando o primeiro endereço IP obtido
+    """
+    # Executa o comando "hostname -I" e captura a saída e os logs de erros
+    addrs = subp.run(["hostname", "-I"], capture_output=True, text=True)
+    # Extrai o primeiro endereço IP retornado para o stdout
+    ip = addrs.stdout.split()[0]
+    return ip
 
 def get_content(
         c_sock:socket.socket, 
@@ -138,7 +150,7 @@ def main():
     hostname = socket.gethostname()
     # Variável 'hardcoded', precisa ser substituída pelo valor obtido por terminal (comando "hostname -I")
     # para conseguir estabelecer conexão com um navegador remoto
-    ip = "192.168.0.6"
+    ip = get_ip_addr()
     SERVER_PORT = 8000
 
     # Log para monitoramento da atividade do servidor e debugging
